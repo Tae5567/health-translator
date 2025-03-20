@@ -133,7 +133,7 @@ export default function Home() {
   if (!recognitionSupported) {
     return (
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <h1 className="text-3xl font-bold text-center mb-8 text-[#ff8496]">
+        <h1 className="text-3xl font-bold text-center mb-8 gradient-text">
           Health Talk Translation
         </h1>
         <UnsupportedBrowser 
@@ -146,31 +146,37 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold text-center mb-8 text-[#ff8496]">
+      <h1 className="text-4xl font-bold text-center mb-4 gradient-text">
         Health Talk Translation
       </h1>
+      <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+        Breaking language barriers in healthcare conversations with real-time translation
+      </p>
       
       {!apiKeyAvailable && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-6">
-          <p className="font-medium">OpenAI API Key Missing</p>
-          <p className="text-sm">Translation functionality is disabled. Please add your OpenAI API key to the environment variables.</p>
+        <div className="bg-amber-50 border-l-4 border-amber-400 text-amber-800 px-6 py-4 rounded shadow-sm mb-8">
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <p className="font-medium">OpenAI API Key Missing</p>
+          </div>
+          <p className="mt-1 text-sm ml-7">Translation functionality is disabled. Please add your OpenAI API key to the environment variables.</p>
         </div>
       )}
-       <>
-    {!privacyAccepted && <PrivacyNotice onAccept={() => setPrivacyAccepted(true)} />}
-    {/* Existing Page Code */}
-  </>
       
-      <div className="mb-6">
+      {!privacyAccepted && <PrivacyNotice onAccept={() => setPrivacyAccepted(true)} />}
+      
+      <div className="card mb-8">
         <div className="flex flex-wrap items-center gap-4 mb-4">
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Source Language
             </label>
             <select
               value={sourceLanguage}
               onChange={(e) => setSourceLanguage(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff9aab]"
+              className="language-select w-full bg-white border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)] focus:border-transparent transition-all duration-200"
             >
               {LANGUAGES.map((lang) => (
                 <option key={`source-${lang.code}`} value={lang.code}>
@@ -182,20 +188,22 @@ export default function Home() {
           
           <button
             onClick={handleSwapLanguages}
-            className="mt-6 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            className="mt-6 p-3 rounded-full bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm"
             aria-label="Swap languages"
           >
-            ↔️
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
           </button>
           
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Target Language
             </label>
             <select
               value={targetLanguage}
               onChange={(e) => setTargetLanguage(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff9aab]"
+              className="language-select w-full bg-white border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)] focus:border-transparent transition-all duration-200"
             >
               {LANGUAGES.map((lang) => (
                 <option key={`target-${lang.code}`} value={lang.code}>
@@ -207,16 +215,20 @@ export default function Home() {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <h2 className="text-lg font-semibold mb-2 text-gray-700">
-            Original ({LANGUAGES.find(lang => lang.code === sourceLanguage)?.name})
-          </h2>
-          <TranscriptDisplay
-            transcript={transcript}
-            status={transcriptionStatus}
-            placeholder="Speak to start transcription..."
-          />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="card relative">
+          <div className="absolute -top-3 left-4 bg-white px-2 rounded-md">
+            <span className="text-sm font-medium text-gray-600">
+              Original ({LANGUAGES.find(lang => lang.code === sourceLanguage)?.name})
+            </span>
+          </div>
+          <div className="h-64 overflow-auto mb-4">
+            <TranscriptDisplay
+              transcript={transcript}
+              status={transcriptionStatus}
+              placeholder="Speak to start transcription..."
+            />
+          </div>
           <div className="mt-4">
             <SpeechRecognition
               language={sourceLanguage}
@@ -226,51 +238,74 @@ export default function Home() {
           </div>
         </div>
         
-        <div>
-          <h2 className="text-lg font-semibold mb-2 text-gray-700">
-            Translation ({LANGUAGES.find(lang => lang.code === targetLanguage)?.name})
-          </h2>
-          <TranscriptDisplay
-            transcript={translation}
-            status={translationStatus}
-            placeholder="Translation will appear here..."
-          />
-          <div className="mt-4 flex gap-3">
+        <div className="card relative">
+          <div className="absolute -top-3 left-4 bg-white px-2 rounded-md">
+            <span className="text-sm font-medium text-gray-600">
+              Translation ({LANGUAGES.find(lang => lang.code === targetLanguage)?.name})
+            </span>
+          </div>
+          <div className="h-64 overflow-auto mb-4">
+            <TranscriptDisplay
+              transcript={translation}
+              status={translationStatus}
+              placeholder="Translation will appear here..."
+            />
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3">
             {synthesisSupported && (
               <button
                 onClick={handleSpeak}
                 disabled={!translation || translationStatus === 'translating'}
-                className={`rounded-full px-5 py-2 font-medium flex items-center gap-2 shadow-sm transition-colors duration-200 ${
+                className={`flex items-center gap-2 btn-primary ${
                   !translation || translationStatus === 'translating'
-                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    : isSpeaking
-                    ? 'bg-[#ffb1be] hover:bg-[#ff9aab] text-white'
-                    : 'bg-[#ff9aab] hover:bg-[#ff8496] text-white'
+                    ? 'opacity-50 cursor-not-allowed'
+                    : ''
                 }`}
                 aria-label={isSpeaking ? "Stop speaking" : "Speak translation"}
               >
-                {isSpeaking ? 'Stop Speaking' : 'Speak Translation'}
+                {isSpeaking ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
+                    </svg>
+                    Stop Speaking
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
+                    </svg>
+                    Speak Translation
+                  </>
+                )}
               </button>
             )}
             <button
               onClick={handleReset}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full px-5 py-2 shadow-sm transition-colors duration-200"
+              className="btn-secondary flex items-center gap-2"
               aria-label="Reset all"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+              </svg>
               Reset All
             </button>
           </div>
         </div>
       </div>
       
-      <footer className="mt-12 text-center text-sm text-gray-500">
-        <p>
-          This application uses OpenAI&apos;s API for translation and the Web Speech API for 
-          speech recognition and synthesis. For best results, use Chrome or Edge.
-        </p>
-        <p className="mt-2">
-          © {new Date().getFullYear()} Health Talk Translation
-        </p>
+      <footer className="mt-16 text-center">
+        <div className="bg-white rounded-lg shadow-sm p-6 max-w-2xl mx-auto">
+          <p className="text-gray-600">
+            This application uses OpenAI&apos;s API for translation and the Web Speech API for 
+            speech recognition and synthesis. For best results, use Chrome or Edge.
+          </p>
+          <div className="mt-4 flex items-center justify-center text-sm text-gray-500">
+            <span>© {new Date().getFullYear()} Health Talk Translation</span>
+            <span className="mx-2">•</span>
+            <span>Breaking language barriers in healthcare</span>
+          </div>
+        </div>
       </footer>
     </main>
   );
